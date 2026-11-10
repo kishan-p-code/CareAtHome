@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: careathome_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: careathome_secret_password
+      POSTGRES_DB: careathome
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: careathome_backend
+    restart: always
+    environment:
+      DATABASE_URL: postgresql://postgres:careathome_secret_password@db:5432/careathome
+      SECRET_KEY: careathome_super_secret_production_key_2026_blood_collection
+      RAZORPAY_KEY_ID: rzp_test_CareAtHomeTestKey
+      RAZORPAY_KEY_SECRET: careathome_test_secret_mock
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: careathome_frontend
+    restart: always
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000/api
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+
