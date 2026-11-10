@@ -213,3 +213,5 @@ docker-compose up --build
 - **Digital Signatures**: Reports are digitally signed and verifiable under the Information Technology Act, 2000.
 
 #
+#   C a r e A t H o m e  
+ 
